@@ -96,6 +96,10 @@ const AbsenIdCard = () => {
         setColAbs(data)
     }
 
+    const removeSymbol = (string) => {
+        return string?.replace(/_/g, ' ')
+    }
+
     return (
         <div className='w-full h-screen relative p-10 overflow-hidden'>
             <div className=' w-96 h-96 absolute -right-32 -top-32' style={{ backgroundImage: `url(${background})` }}></div>
@@ -112,7 +116,7 @@ const AbsenIdCard = () => {
                     <StudentData title={"NISN"} value={data.student?.nisn} />
                     <StudentData title={"Nama"} value={data.student?.name} />
                     <StudentData title={"Kelas"} value={data.student?.classGrade.grade} />
-                    <StudentData title={"Jurusan"} value={data.student?.classGrade.major} />
+                    <StudentData title={"Jurusan"} value={removeSymbol(data.student?.classGrade.major)} />
                 </div>
 
                 <div>

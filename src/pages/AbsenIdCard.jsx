@@ -13,13 +13,10 @@ import axios from "../axios/axios";
 import ImageWaves from "../components/ImageWaves.jsx";
 import StudentData from "../components/StudentData.jsx";
 import TextAbsensi from "../components/TextAbsensi.jsx";
+import {getDeviceType} from "../util/Tools.js";
+import useGlobalStore from "../store/GlobalStore.js";
 
 const AbsenIdCard = () => {
-
-    if (window.innerWidth >= 500) {
-        return <NotSuportDevice />
-    }
-
     const navigate = useNavigate()
     const [data, setData] = useState({ student: null })
     const [colAbs, setColAbs] = useState({ color: "green", absenType: 0 })
@@ -27,23 +24,7 @@ const AbsenIdCard = () => {
     const [alertProp, setAlertProp] = useState({ icon: "", message: "" })
     const [loading, setLoading] = useState(false)
     const [show, setShow] = useState(false)
-
-
-    useEffect(() => {
-        const fetchDataAndSetData = async () => {
-            try {
-                const nisn = window.location.href.split('/').pop();
-                const response = await axios.get(`/students/get/nisn/${nisn}`)
-
-                const student = await response.data.data;
-                setData(prev => ({ ...prev, student }));
-            } catch (error) {
-                console.error("Error fetching image:", error.message);
-            }
-        };
-
-        fetchDataAndSetData();
-    }, [])
+    const {isSupportedDevice, setSupportedDevice} = useGlobalStore()
 
     const studentAbsen = async () => {
         try {
@@ -98,6 +79,31 @@ const AbsenIdCard = () => {
 
     const removeSymbol = (string) => {
         return string?.replace(/_/g, ' ')
+    }
+
+    useEffect(() => {
+        const fetchDataAndSetData = async () => {
+            try {
+                const nisn = window.location.href.split('/').pop();
+                const response = await axios.get(`/students/get/nisn/${nisn}`)
+
+                const student = await response.data.data;
+                setData(prev => ({ ...prev, student }));
+            } catch (error) {
+                console.error("Error fetching image:", error.message);
+            }
+        };
+        if( getDeviceType() === "mobile") {
+            setSupportedDevice(true)
+            fetchDataAndSetData();
+        } else {
+            setSupportedDevice(false)
+        }
+
+    }, [])
+
+    if (isSupportedDevice) {
+        return <NotSuportDevice/>
     }
 
     return (

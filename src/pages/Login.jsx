@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import Alert from '../components/Alert'
 import success from "../assets/correct.svg"
@@ -13,12 +13,14 @@ import background from "../assets/patternpad.svg"
 import NotSuportDevice from '../components/NotSuportDevice'
 import Cookies from "js-cookie";
 import axios from "../axios/axios.js";
+import useGlobalStore from "../store/GlobalStore.js";
+import {getDeviceType} from "../util/Tools.js";
 
 const Login = () => {
 
-    if (window.innerWidth >= 500) {
-        return <NotSuportDevice/>
-    }
+    // if (window.innerWidth >= 500) {
+    //     return <NotSuportDevice/>
+    // }
 
     const navigate = useNavigate()
     const [form, setForm] = useState({email: "", password: ""})
@@ -26,6 +28,7 @@ const Login = () => {
     const [openAlert, setOpenAlert] = useState(false)
     const [loading, setLoading] = useState(false)
     const [hide, setHide] = useState(false)
+    const {isSupportedDevice, setSupportedDevice} = useGlobalStore()
 
     const handleEmail = (e) => {
         setForm(prev => ({
@@ -82,6 +85,15 @@ const Login = () => {
             setLoading(false)
         }
     }
+
+    useEffect(() => {
+        getDeviceType() === "mobile" ? setSupportedDevice(true) : setSupportedDevice(false)
+    },[])
+
+    if (isSupportedDevice) {
+        return <NotSuportDevice/>
+    }
+
     return (
         <div className='w-full h-screen relative  overflow-hidden flex flex-col justify-evenly'>
             <div className=' w-96 h-96 absolute -right-32 -top-32'

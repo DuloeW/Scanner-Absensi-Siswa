@@ -1,28 +1,19 @@
 import React, {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import NotSuportDevice from '../components/NotSuportDevice'
+import useGlobalStore from "../store/GlobalStore.js";
 
 const ScannerIdCard = () => {
 
-    //check device
-    if (window.innerWidth >= 500) {
-        return <NotSuportDevice/>
-    }
-
     const navigate = useNavigate()
 
+    const {isSupportedDevice, setSupportedDevice} = useGlobalStore()
     const [data, setData] = useState({data: null})
     const [dateNow, setDateNow] = useState({
         date: "",
         month: "",
         year: ""
     })
-
-    useEffect(() => {
-        startDetection2()
-        convertDate()
-        console.log(data.data)
-    }, [])
 
 
     const startDetection2 = async () => {
@@ -77,6 +68,23 @@ const ScannerIdCard = () => {
         }))
     }
 
+    useEffect(() => {
+        const startScanner = async () => {
+            try {
+                await startDetection2()
+                setSupportedDevice(false)
+            } catch (error) {
+                setSupportedDevice(true)
+            }
+        }
+        startScanner();
+        convertDate();
+    }, [])
+
+    //check device
+    if (isSupportedDevice) {
+        return <NotSuportDevice/>
+    }
 
     return (
         <div className='w-full h-screen overflow-hidden relative p-10 flex flex-col items-center gap-20'>

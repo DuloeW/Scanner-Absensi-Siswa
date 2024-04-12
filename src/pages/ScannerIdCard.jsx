@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import NotSuportDevice from '../components/NotSuportDevice'
 import useGlobalStore from "../store/GlobalStore.js";
+import {getDeviceType} from "../util/Tools.js";
 
 const ScannerIdCard = () => {
 
@@ -69,34 +70,33 @@ const ScannerIdCard = () => {
     }
 
     useEffect(() => {
+        getDeviceType() === "mobile" ? setSupportedDevice(true) : setSupportedDevice(false)
+    }, [])
+
+    useEffect(() => {
         const startScanner = async () => {
             try {
                 await startDetection2()
-                setSupportedDevice(false)
             } catch (error) {
-                setSupportedDevice(true)
+                console.error("Error starting detection:", error.message);
             }
         }
         startScanner();
         convertDate();
     }, [])
 
-    //check device
-    if (isSupportedDevice) {
-        return <NotSuportDevice/>
-    }
-
     return (
-        <div className='w-full h-screen overflow-hidden relative p-10 flex flex-col items-center gap-20'>
-            <div className='w-44 h-44 rounded-full bg-blue-950 absolute -top-20 -right-20 -z-10'></div>
-            <div className='mt-[10%]'>
-                <h1 className='text-[40px] font-extrabold text-blue-950'>Absensi Barcode</h1>
-                <p className='text-center font-extrabold text-blue-950 tracking-widest'>{dateNow.date} - {dateNow.month} - {dateNow.year}</p>
+        !isSupportedDevice ? <NotSuportDevice/> :
+            <div className='w-full h-screen overflow-hidden relative p-10 flex flex-col items-center gap-20'>
+                <div className='w-44 h-44 rounded-full bg-blue-950 absolute -top-20 -right-20 -z-10'></div>
+                <div className='mt-[10%]'>
+                    <h1 className='text-[40px] font-extrabold text-blue-950'>Absensi Barcode</h1>
+                    <p className='text-center font-extrabold text-blue-950 tracking-widest'>{dateNow.date} - {dateNow.month} - {dateNow.year}</p>
+                </div>
+                <video className='w-auto rounded-xl'
+                       id='barcode-detection-video'></video>
+                <div className='w-44 h-44 rounded-full bg-blue-950 absolute -bottom-20 -left-20 -z-10'></div>
             </div>
-            <video className='w-auto rounded-xl'
-                   id='barcode-detection-video'></video>
-            <div className='w-44 h-44 rounded-full bg-blue-950 absolute -bottom-20 -left-20 -z-10'></div>
-        </div>
     )
 }
 

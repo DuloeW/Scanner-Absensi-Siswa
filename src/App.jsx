@@ -1,12 +1,13 @@
 import React, {Suspense} from 'react';
 import {RouterProvider, createBrowserRouter} from 'react-router-dom';
-import ScannerIdCard from './pages/ScannerIdCard';
-import AbsenIdCard from './pages/AbsenIdCard';
-import Login from './pages/Login';
 import PrivateRoute from './security/PrivateRoute';
 import './index.css';
 import PageNotFound from "./components/PageNotFound.jsx";
 import LoadinMountComponent from "./components/LoadinMountComponent.jsx";
+
+const ScannerIdCard = React.lazy(() => import('./pages/ScannerIdCard.jsx'));
+const AbsenIdCard = React.lazy(() => import('./pages/AbsenIdCard.jsx'));
+const Login = React.lazy(() => import('./pages/Login.jsx'));
 
 const App = () => {
     const router = createBrowserRouter([

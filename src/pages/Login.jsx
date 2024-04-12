@@ -18,10 +18,6 @@ import {getDeviceType} from "../util/Tools.js";
 
 const Login = () => {
 
-    // if (window.innerWidth >= 500) {
-    //     return <NotSuportDevice/>
-    // }
-
     const navigate = useNavigate()
     const [form, setForm] = useState({email: "", password: ""})
     const [alertProp, setAlertProp] = useState({message: "", icon: ""})
@@ -61,9 +57,8 @@ const Login = () => {
             setLoading(true)
             const response = await axios.post('admin-scanner/login', form)
             const responseData = response.data
-
-            console.log(response.status)
             Cookies.set('token-scanner', responseData.token, {expires: 1})
+            localStorage.setItem("isLogin", "1")
             switchOpenAlert()
             setAlertProp(prev => ({
                 ...prev,
@@ -96,6 +91,7 @@ const Login = () => {
 
         if (unauthorized === '1') {
             alert('Sesi anda telah berakhir, silahkan login kembali')
+            localStorage.setItem('unauthorized', "0")
         }
     }, [])
 

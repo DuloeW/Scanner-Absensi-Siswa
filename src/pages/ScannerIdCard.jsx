@@ -74,14 +74,7 @@ const ScannerIdCard = () => {
     }, [])
 
     useEffect(() => {
-        const startScanner = async () => {
-            try {
-                await startDetection2()
-            } catch (error) {
-                console.error("Error starting detection:", error.message);
-            }
-        }
-        startScanner();
+        startDetection2();
         convertDate();
     }, [])
 

@@ -35,6 +35,15 @@ const AbsenIdCard = () => {
                 status: colAbs.absenType
             };
 
+            if (data.student.status === "NON_ACTIVE") {
+                switchOpenAlert();
+                setAlertProp(prev => ({
+                    ...prev,
+                    message: "Siswa Tidak Aktif",
+                    icon: failed
+                }));
+                return;
+            }
             const response = await axios.post("/absensi/create", student);
             const responseData = response.data.data;
 
@@ -87,6 +96,7 @@ const AbsenIdCard = () => {
                 const nisn = window.location.href.split('/').pop();
                 const response = await axios.get(`/students/get/nisn/${nisn}`)
                 const student = await response.data.data;
+                console.log(student)
                 setData(prev => ({...prev, student}));
             } catch (error) {
                 console.error("Error fetching image:", error.message);

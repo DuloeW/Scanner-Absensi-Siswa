@@ -57,7 +57,7 @@ const Login = () => {
             setLoading(true)
             const response = await axios.post('admin-scanner/login', form)
             const responseData = response.data
-            Cookies.set('token-scanner', responseData.token, {expires: 1})
+            Cookies.set('token-scanner', responseData.token, {expires: 7})
             localStorage.setItem("isLogin", "1")
             switchOpenAlert()
             setAlertProp(prev => ({
